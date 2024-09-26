@@ -41,13 +41,17 @@ class WorkTile extends StatelessWidget {
                     children: [
                       Text(name,
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
+                              color: Color(0xFF17202A),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16)),
                       SizedBox(
                         width: 5,
                       ),
                       Text(number,
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
+                              color: Color(0xFF17202A),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16)),
                     ],
                   ),
                 ],

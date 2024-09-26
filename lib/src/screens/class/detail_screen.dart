@@ -1,5 +1,3 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1071664275.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1208319279.
 import 'package:flutter/material.dart';
 
 class DetailScreen extends StatelessWidget {
@@ -9,19 +7,47 @@ class DetailScreen extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-              title: Text('Detail Screen'),
-              bottom: TabBar(
+              elevation: 0,
+              iconTheme: const IconThemeData(color: Colors.white),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30)),
+              ),
+              title: const Text(
+                'Detail Screen',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: const Color(0xFF19425A),
+              bottom: const TabBar(
+                splashBorderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20)),
+                indicatorColor: Colors.white,
+                unselectedLabelColor: Colors.cyan,
+                labelStyle: TextStyle(color: Colors.white),
                 tabs: <Widget>[
-                  Tab(icon: Icon(Icons.favorite)),
-                  Tab(icon: Icon(Icons.ad_units))
+                  Tab(text: "topicos", icon: Icon(Icons.favorite)),
+                  Tab(text: 'Estudiantes', icon: Icon(Icons.ad_units))
                 ],
               )),
           body: TabBarView(
             children: [
-              ListView(
-                children: <Widget>[classCard(), classCard(), classCard()],
+              Container(
+                margin: const EdgeInsets.all(16),
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  children: <Widget>[
+                    classCard(),
+                    classCard(),
+                    classCard(),
+                    classCard(),
+                    classCard(),
+                    classCard()
+                  ],
+                ),
               ),
-              Container(child: Text("asda")),
+              Container(child: const Text("asda")),
             ],
           ),
         ));
@@ -30,7 +56,7 @@ class DetailScreen extends StatelessWidget {
 
 Widget classCard() {
   return Padding(
-    padding: EdgeInsets.only(bottom: 12.0),
+    padding: const EdgeInsets.only(bottom: 12.0),
     child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -45,14 +71,14 @@ Widget classCard() {
                 ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       color: Colors.orange,
-                      child: Icon(Icons.add, color: Colors.white),
+                      child: const Icon(Icons.add, color: Colors.white),
                     )),
-                SizedBox(
+                const SizedBox(
                   width: 12,
                 ),
-                Column(
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Desarrollo de Software",
