@@ -1,24 +1,38 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1971757490.
 import 'package:flutter/material.dart';
-import 'package:flutter_profile_picture/flutter_profile_picture.dart';
-import 'package:myapp/src/models/Event.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class Events extends StatelessWidget {
+class Events extends StatefulWidget {
+  const Events({super.key});
+
+  @override
+  EventState createState() => EventState();
+}
+
+class EventState extends State<Events> {
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectDay;
-  Map<DateTime, List<Event>> events = {};
-  List<Event> _events = [];
-  final DateTime firstDay = DateTime.utc(2010, 10, 16);
-  final DateTime lastDay = DateTime.utc(2030, 3, 14);
+  Map<DateTime, List<String>> _events = {
+    DateTime(2024, 9, 26): ['Evento 1', 'Evento 2'],
+    DateTime(2024, 9, 27): ['Evento 3'],
+  };
+  DateTime removeTime(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
 
-  Events({super.key});
+  List<String> _getEventsForDay(DateTime day) {
+    DateTime cleanedDay = removeTime(day);
 
+    print('Day selected: $day');
+    print('Events: ${_events[day]}');
+    return _events[cleanedDay] ?? [];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SizedBox(
-        child: ListView(
-          scrollDirection: Axis.vertical,
+        child: Column(
           children: [
             Container(
                 width: double.infinity,
@@ -38,14 +52,39 @@ class Events extends StatelessWidget {
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ],
-                    ),                    
+                    ),
                   ],
                 )),
-            Container(
-                child: TableCalendar(
-                    focusedDay: _focusedDay,
-                    firstDay: firstDay,
-                    lastDay: lastDay))
+            TableCalendar(
+              firstDay: DateTime.utc(2024, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+              },
+              calendarFormat: _calendarFormat,
+              onFormatChanged: (format) {
+                setState(() {
+                  _calendarFormat = format;
+                });
+              },
+              eventLoader: _getEventsForDay,
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _getEventsForDay(_selectedDay).length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(_getEventsForDay(_selectedDay)[index]),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),

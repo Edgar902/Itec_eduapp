@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:myapp/src/screens/calendar/events.dart';
+import 'package:myapp/src/screens/config/config_screen.dart';
 import 'package:myapp/src/screens/home/Homepage_screen.dart';
 import 'package:myapp/src/screens/user/user_screen.dart';
 
@@ -38,17 +39,22 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: SizedBox.expand(
           child: PageView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {
             currentIndex = index;
           });
         },
-        children: [HomepageScreen(), Events(), user_screen()],
+        children: [
+          const HomepageScreen(),
+          Events(),
+          UserScreen(),
+          ConfigScreen()
+        ],
       )),
       bottomNavigationBar: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         decoration: const BoxDecoration(
             color: Colors.white,
             boxShadow: [
@@ -67,8 +73,8 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
           child: GNav(
               backgroundColor: Colors.white,
-              color: Color(0xFF19425A),
-              activeColor: Color(0xFF19425A),
+              color: const Color(0xFF19425A),
+              activeColor: const Color(0xFF19425A),
               gap: 8,
               onTabChange: (index) {
                 _pageController.jumpToPage(index);

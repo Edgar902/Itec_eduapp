@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
-class UserScreen extends StatelessWidget {
-  const UserScreen({super.key});
+class ConfigScreen extends StatelessWidget {
+  const ConfigScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,32 +14,26 @@ class UserScreen extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   height: 150,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                       color: Color(0xFF19425A),
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(30),
                           bottomRight: Radius.circular(30))),
-                  padding: const EdgeInsets.all(20.0),
-                  child: const Center(
+                  padding: EdgeInsets.all(20.0),
+                  child: Center(
                     child: Text(
-                      'Perfil',
+                      'Configuracion',
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 60,
-                ),
-                const Center(
-                  child: Text("Alasldas"),
                 ),
                 Container(
                   margin: EdgeInsets.all(20.0),
                   child: Column(
                     children: [
-                      Divider(
-                        color: Colors.black,
-                      ),
                       SizedBox(
                         height: 20,
                       ),
@@ -89,73 +82,15 @@ class UserScreen extends StatelessWidget {
                               ),
                             ],
                           )),
-                      infoUserCard(Icons.phone, "Celular", "0990143583"),
-                      infoUserCard(
-                          Icons.calendar_month, "Nacimiento", "19-11-2001"),
-                      infoUserCard(Icons.phone, "Celular", "0990143583"),
+                      Text("Cerrar Session")
                     ],
                   ),
                 ),
               ],
-            ),
-            const Positioned.fill(
-              top: 100,
-              child: Align(
-                alignment: AlignmentDirectional.topCenter,
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: ProfilePicture(
-                    name: 'Aditya Dharmawan Saputra',
-                    radius: 31,
-                    fontsize: 21,
-                    random: true,
-                  ),
-                ),
-              ),
             ),
           ],
         ),
       ),
     );
   }
-}
-
-Widget infoUserCard(iconCard, title, name) {
-  return SizedBox(
-    child: Padding(
-        padding: EdgeInsets.only(bottom: 20.0, top: 15.0),
-        child: Row(
-          children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: EdgeInsets.all(16),
-                  color: Colors.orange,
-                  child: Icon(iconCard, color: Colors.white),
-                )),
-            SizedBox(
-              width: 12,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: TextStyle(
-                        color: Color(0xFF17202A),
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16)),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(name,
-                    style: TextStyle(
-                        color: Color(0xFF17202A),
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16)),
-              ],
-            ),
-          ],
-        )),
-  );
 }
