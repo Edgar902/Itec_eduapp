@@ -80,31 +80,31 @@ class HomepageScreen extends StatelessWidget {
                     height: 20,
                   ),
                   WorkTile(
-                    icon: Icons.book,
-                    name: 'Tarea 1',
-                    number: '2024-11-20 / 14:00',
-                  ),
+                      icon: Icons.book,
+                      name: 'Tarea 1',
+                      number: '2024-11-20 / 14:00',
+                      colors: Colors.green),
                   WorkTile(
-                    icon: Icons.book,
-                    name: 'Tarea 2',
-                    number: '2024-11-22 / 23:00',
-                  ),
+                      icon: Icons.book,
+                      name: 'Tarea 2',
+                      number: '2024-11-22 / 23:00',
+                      colors: Colors.green),
                   WorkTile(
-                    icon: Icons.forum,
-                    name: 'Foro',
-                    number: '2024-11-23 / 16:30',
-                  ),
+                      icon: Icons.forum,
+                      name: 'Foro',
+                      number: '2024-11-23 / 16:30',
+                      colors: Colors.blue),
                   WorkTile(
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:824510203.
-                    icon: Icons.assessment,
-                    name: 'Evaluacion',
-                    number: '2024-11-30 / 11:00',
-                  ),
+                      icon: Icons.assessment,
+                      name: 'Evaluacion',
+                      number: '2024-11-30 / 11:00',
+                      colors: Colors.orange),
                   WorkTile(
-                    icon: Icons.book,
-                    name: 'Tarea 3',
-                    number: '2024-12-01 / 24:00',
-                  ),
+                      icon: Icons.book,
+                      name: 'Tarea 3',
+                      number: '2024-12-01 / 24:00',
+                      colors: Colors.green),
                 ],
               ),
             ),
@@ -127,7 +127,8 @@ Widget classCard(context, title) {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DetailScreen()),
+                MaterialPageRoute(
+                    builder: (context) => DetailScreen(name: title)),
               );
             },
             shape: RoundedRectangleBorder(

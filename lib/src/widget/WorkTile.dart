@@ -4,12 +4,14 @@ class WorkTile extends StatelessWidget {
   final icon;
   final String name;
   final String number;
-  const WorkTile({
-    Key? key,
-    required this.icon,
-    required this.name,
-    required this.number,
-  }) : super(key: key);
+  final Color colors;
+  const WorkTile(
+      {Key? key,
+      required this.icon,
+      required this.name,
+      required this.number,
+      required this.colors})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class WorkTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         padding: EdgeInsets.all(16),
-                        color: Colors.orange,
+                        color: colors,
                         child: Icon(icon, color: Colors.white),
                       )),
                   SizedBox(

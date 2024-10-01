@@ -91,8 +91,8 @@ class UserScreen extends StatelessWidget {
                           )),
                       infoUserCard(Icons.phone, "Celular", "0990143583"),
                       infoUserCard(
-                          Icons.calendar_month, "Nacimiento", "19-11-2001"),
-                      infoUserCard(Icons.phone, "Celular", "0990143583"),
+                          Icons.calendar_month, "Nacimiento", "11-11-2001"),
+                      infoUserCard(Icons.phone, "Celular", "0999999999"),
                     ],
                   ),
                 ),

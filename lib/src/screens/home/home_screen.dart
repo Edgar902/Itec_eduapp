@@ -46,8 +46,8 @@ class _HomePageState extends State<HomePage> {
             currentIndex = index;
           });
         },
-        children: [
-          const HomepageScreen(),
+        children: const [
+          HomepageScreen(),
           Events(),
           UserScreen(),
           ConfigScreen()

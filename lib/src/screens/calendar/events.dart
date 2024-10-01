@@ -13,8 +13,8 @@ class EventState extends State<Events> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   Map<DateTime, List<String>> _events = {
-    DateTime(2024, 9, 26): ['Evento 1', 'Evento 2'],
-    DateTime(2024, 9, 27): ['Evento 3'],
+    DateTime(2024, 10, 01): ['Evento 1', 'Evento 2'],
+    DateTime(2024, 10, 13): ['Evento 3','Evento4', 'Evento 5'],
   };
   DateTime removeTime(DateTime date) {
     return DateTime(date.year, date.month, date.day);

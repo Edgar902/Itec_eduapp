@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/src/widget/WorkTile.dart';
 
 class DetailScreen extends StatelessWidget {
+  final String name;
+
+  const DetailScreen({
+    super.key,
+    required this.name,
+  });
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -14,20 +21,20 @@ class DetailScreen extends StatelessWidget {
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30)),
               ),
-              title: const Text(
-                'Detail Screen',
-                style: TextStyle(color: Colors.white),
+              title: Text(
+                name,
+                style: const TextStyle(color: Colors.white),
               ),
               backgroundColor: const Color(0xFF19425A),
               bottom: const TabBar(
                 splashBorderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20)),
-                indicatorColor: Colors.white,
-                unselectedLabelColor: Colors.cyan,
-                labelStyle: TextStyle(color: Colors.white),
+                indicatorColor: Colors.cyan,
+                unselectedLabelColor: Colors.white,
+                labelStyle: TextStyle(color: Colors.cyan),
                 tabs: <Widget>[
-                  Tab(text: "topicos", icon: Icon(Icons.favorite)),
+                  Tab(text: "Modulos", icon: Icon(Icons.favorite)),
                   Tab(text: 'Estudiantes', icon: Icon(Icons.ad_units))
                 ],
               )),
@@ -38,23 +45,34 @@ class DetailScreen extends StatelessWidget {
                 child: ListView(
                   scrollDirection: Axis.vertical,
                   children: <Widget>[
-                    classCard(),
-                    classCard(),
-                    classCard(),
-                    classCard(),
-                    classCard(),
-                    classCard()
+                    classCard("General"),
+                    classCard("Tema 1"),
+                    classCard("Tema 2"),
+                    classCard("Tema 3"),
+                    classCard("Tema 4"),
                   ],
                 ),
               ),
-              Container(child: const Text("asda")),
+              Container(
+                margin: const EdgeInsets.all(16),
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  children: const <Widget>[
+                    WorkTile(
+                        icon: Icons.person,
+                        name: "Edgar Andrade",
+                        number: "Estudiante No - 1",
+                        colors: Colors.red)
+                  ],
+                ),
+              ),
             ],
           ),
         ));
   }
 }
 
-Widget classCard() {
+Widget classCard(nombre) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 12.0),
     child: Container(
@@ -78,13 +96,13 @@ Widget classCard() {
                 const SizedBox(
                   width: 12,
                 ),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Desarrollo de Software",
-                        style: TextStyle(
+                    Text(nombre,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16)),
-                    SizedBox(
+                    const SizedBox(
                       width: 5,
                     ),
                   ],
