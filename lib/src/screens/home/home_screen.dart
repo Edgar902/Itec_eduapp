@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:myapp/src/screens/calendar/events.dart';
 import 'package:myapp/src/screens/config/config_screen.dart';
 import 'package:myapp/src/screens/home/Homepage_screen.dart';
+
 import 'package:myapp/src/screens/user/user_screen.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
           });
         },
         children: const [
-          HomepageScreen(),
+          HomePageScreen(),
           Events(),
           UserScreen(),
           ConfigScreen()

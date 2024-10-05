@@ -2,9 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:myapp/src/screens/class/detail_screen.dart';
 import 'package:myapp/src/widget/WorkTile.dart';
+import 'package:http/http.dart' as http;
 
-class HomepageScreen extends StatelessWidget {
-  const HomepageScreen({super.key});
+class HomePageScreen extends StatefulWidget {
+  const HomePageScreen({super.key});
+
+  @override
+  State<HomePageScreen> createState() => HomepageState();
+}
+
+class HomepageState extends State<HomePageScreen> {
+  var data;
+  fetchData() async {
+    var url = Uri.parse(
+        'https://cuentademo.info/login/token.php?username=admin&password=Admin_234&service=moodle_mobile_app');
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      print("datos: ${response.body}");
+    } else {
+      print("sin datos");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +54,7 @@ class HomepageScreen extends StatelessWidget {
                           width: 15,
                         ),
                         Text(
-                          'Aditya Dharmawan',
+                          "Edgar Andrade",
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ],
