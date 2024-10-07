@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:myapp/src/models/course_content.dart';
 import 'package:myapp/src/screens/class/detail_screen.dart';
 import 'package:myapp/src/widget/WorkTile.dart';
 import 'package:http/http.dart' as http;
@@ -12,17 +15,16 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class HomepageState extends State<HomePageScreen> {
-  var data;
-  fetchData() async {
+  static Future<List<Courses>> getCourses() async {
     var url = Uri.parse(
         'https://cuentademo.info/login/token.php?username=admin&password=Admin_234&service=moodle_mobile_app');
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      print("datos: ${response.body}");
-    } else {
-      print("sin datos");
-    }
+    var response =
+        await http.get(url, headers: {"Content-Type": "application/json"});
+    final List body = json.decode(response.body);
+    return body.map((e) => Courses.fromJson(e)).toList();
   }
+
+  Future<List<Courses>> coursesFuture = getCourses();
 
   @override
   Widget build(BuildContext context) {
@@ -75,16 +77,20 @@ class HomepageState extends State<HomePageScreen> {
                   const SizedBox(
                     height: 15,
                   ),
-                  SizedBox(
-                      child: Wrap(
-                    children: <Widget>[
-                      classCard(context, 'Desarrollo de Software'),
-                      classCard(context, 'Mecanica Automotriz'),
-                      classCard(context, 'Estetica Integral'),
-                      classCard(context, 'Turismo'),
-                      classCard(context, 'Diseño Grafico'),
-                    ],
-                  )),
+                  FutureBuilder<List<Courses>>(
+                      future: coursesFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasData) {
+                          final post = snapshot.data;
+                          return buildCourses(post!);
+                        } else {
+                          print("datos snapshot ${snapshot}");
+                          return const Text("No data available");
+                        }
+                      })
                 ],
               ),
             ),
@@ -173,4 +179,25 @@ Widget classCard(context, title) {
               ),
             ]))),
   );
+}
+
+Widget buildCourses(List<Courses> courses) {
+  return ListView.builder(
+      itemCount: courses.length,
+      itemBuilder: (context, index) {
+        final course = courses[index];
+        return Container(
+          color: Colors.grey.shade300,
+          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          height: 100,
+          width: double.maxFinite,
+          child: Row(
+            children: [
+              SizedBox(width: 10),
+              Expanded(flex: 3, child: Text(course.name!)),
+            ],
+          ),
+        );
+      });
 }
