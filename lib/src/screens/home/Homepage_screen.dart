@@ -21,6 +21,7 @@ class HomepageState extends State<HomePageScreen> {
     var response =
         await http.get(url, headers: {"Content-Type": "application/json"});
     final List body = json.decode(response.body);
+    print(response.body);
     return body.map((e) => Courses.fromJson(e)).toList();
   }
 
