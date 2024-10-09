@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:myapp/src/models/course.dart';
 import 'package:myapp/src/models/course_content.dart';
 import 'package:myapp/src/screens/class/detail_screen.dart';
 import 'package:myapp/src/widget/WorkTile.dart';
@@ -15,17 +17,16 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class HomepageState extends State<HomePageScreen> {
-  static Future<List<Courses>> getCourses() async {
+  static Future<List<Course>> getCourses() async {
     var url = Uri.parse(
-        'https://cuentademo.info/login/token.php?username=admin&password=Admin_234&service=moodle_mobile_app');
-    var response =
-        await http.get(url, headers: {"Content-Type": "application/json"});
-    final List body = json.decode(response.body);
-    print(response.body);
-    return body.map((e) => Courses.fromJson(e)).toList();
+        'https://cuentademo.info/webservice/rest/server.php?wstoken=569b80afd1b69a16bbbce82f2e0995f2&wsfunction=core_enrol_get_users_courses&moodlewsrestformat=json&userid=2');
+    var response = await http.get(url);
+    final List body = jsonDecode(response.body);
+
+    return body.map((e) => Course.fromJson(e)).toList();
   }
 
-  Future<List<Courses>> coursesFuture = getCourses();
+  Future<List<Course>> coursesFuture = getCourses();
 
   @override
   Widget build(BuildContext context) {
@@ -70,29 +71,79 @@ class HomepageState extends State<HomePageScreen> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text('Clases', style: TextStyle(fontSize: 20)),
-                  const SizedBox(height: 10),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  FutureBuilder<List<Courses>>(
-                      future: coursesFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasData) {
-                          final post = snapshot.data;
-                          return buildCourses(post!);
-                        } else {
-                          print("datos snapshot ${snapshot}");
-                          return const Text("No data available");
-                        }
-                      })
-                ],
+              child: SizedBox(
+                height: 250, // Ajusta la altura según sea necesario
+                child: FutureBuilder<List<Course>>(
+                  future: coursesFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasData) {
+                      List<Course> courses = snapshot.data ?? [];
+
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: courses.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            child: Stack(
+                              alignment: Alignment.bottomLeft,
+                              children: [
+                                // Imagen del curso
+                                CachedNetworkImage(
+                                  imageUrl: courses[index].courseimage!,
+                                  width: 250,
+                                  height: double.maxFinite,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                                // Gradiente para hacer más legible el texto
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black54
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                // Nombre del curso sobre la imagen
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Text(
+                                    courses[index].fullname!,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return const Text("No data available");
+                    }
+                  },
+                ),
               ),
             ),
             const Padding(
@@ -182,7 +233,7 @@ Widget classCard(context, title) {
   );
 }
 
-Widget buildCourses(List<Courses> courses) {
+Widget buildCourses(context, List<Courses> courses) {
   return ListView.builder(
       itemCount: courses.length,
       itemBuilder: (context, index) {

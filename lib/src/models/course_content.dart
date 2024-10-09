@@ -28,4 +28,10 @@ class Courses {
     summaryformat = json['summaryformat'];
     uservisible = json['uservisible'];
   }
+
+  @override
+  String toString() {
+    return 'Course id: $id, name: $name, Credits: $visible';
+
+  }
 }
