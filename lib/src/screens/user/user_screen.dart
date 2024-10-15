@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:myapp/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class UserScreen extends StatelessWidget {
   const UserScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final username = context.watch<UserProvider>().fullname!;
+    final phone = context.watch<UserProvider>().phone!;
+    final email = context.watch<UserProvider>().email!;
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
@@ -31,8 +36,8 @@ class UserScreen extends StatelessWidget {
                 const SizedBox(
                   height: 60,
                 ),
-                const Center(
-                  child: Text("Alasldas"),
+                Center(
+                  child: Text(username),
                 ),
                 Container(
                   margin: EdgeInsets.all(20.0),
@@ -80,7 +85,7 @@ class UserScreen extends StatelessWidget {
                                   SizedBox(
                                     width: 5,
                                   ),
-                                  Text("test200@gmail.com",
+                                  Text(email,
                                       style: TextStyle(
                                           color: Color(0xFF17202A),
                                           fontWeight: FontWeight.w400,
@@ -89,16 +94,15 @@ class UserScreen extends StatelessWidget {
                               ),
                             ],
                           )),
-                      infoUserCard(Icons.phone, "Celular", "0990143583"),
+                      infoUserCard(Icons.phone, "Celular", phone),
                       infoUserCard(
                           Icons.calendar_month, "Nacimiento", "11-11-2001"),
-                      infoUserCard(Icons.phone, "Celular", "0999999999"),
                     ],
                   ),
                 ),
               ],
             ),
-            const Positioned.fill(
+            Positioned.fill(
               top: 100,
               child: Align(
                 alignment: AlignmentDirectional.topCenter,
@@ -106,7 +110,7 @@ class UserScreen extends StatelessWidget {
                   width: 100,
                   height: 100,
                   child: ProfilePicture(
-                    name: 'Aditya Dharmawan Saputra',
+                    name: username,
                     radius: 31,
                     fontsize: 21,
                     random: true,

@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/src/models/course.dart';
 import 'package:myapp/src/models/course_content.dart';
 import 'package:myapp/src/screens/class/detail_screen.dart';
 import 'package:myapp/src/widget/WorkTile.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({super.key});
@@ -17,6 +19,13 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class HomepageState extends State<HomePageScreen> {
+  @override
+  void initState() {
+    super.initState();
+    var datas = Provider.of<UserProvider>(context, listen: false);
+    datas.fetchUserData();
+  }
+
   static Future<List<Course>> getCourses() async {
     var url = Uri.parse(
         'https://cuentademo.info/webservice/rest/server.php?wstoken=569b80afd1b69a16bbbce82f2e0995f2&wsfunction=core_enrol_get_users_courses&moodlewsrestformat=json&userid=2');
@@ -30,6 +39,7 @@ class HomepageState extends State<HomePageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final name = context.watch<UserProvider>().fullname!;
     return Scaffold(
       body: SizedBox(
         child: ListView(
@@ -43,13 +53,13 @@ class HomepageState extends State<HomePageScreen> {
                         bottomLeft: Radius.circular(30),
                         bottomRight: Radius.circular(30))),
                 padding: const EdgeInsets.all(20.0),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Row(
                       children: [
                         ProfilePicture(
-                          name: 'Aditya Dharmawan Saputra',
+                          name: name,
                           radius: 31,
                           fontsize: 21,
                           random: true,
@@ -58,7 +68,7 @@ class HomepageState extends State<HomePageScreen> {
                           width: 15,
                         ),
                         Text(
-                          "Edgar Andrade",
+                          name,
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ],
