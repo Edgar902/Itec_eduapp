@@ -8,9 +8,9 @@ class UserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final username = context.watch<UserProvider>().fullname!;
-    final phone = context.watch<UserProvider>().phone!;
-    final email = context.watch<UserProvider>().email!;
+    final username = context.watch<UserProvider>().fullname ?? "";
+    final phone = context.watch<UserProvider>().phone ?? "";
+    final email = context.watch<UserProvider>().email ?? "";
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(

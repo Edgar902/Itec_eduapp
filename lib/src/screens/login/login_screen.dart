@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:myapp/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,6 +29,8 @@ class LoginScreenState extends State<LoginScreen> {
       String? token = await login(username, password);
       if (token != null) {
         await saveToken(token);
+        Provider.of<UserProvider>(context, listen: false).clearUserData();
+
         Navigator.pushNamed(context, '/home');
       }
     } catch (e) {
@@ -41,7 +45,10 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Iniciar sesión')),
+      appBar: AppBar(
+        title: const Text('Iniciar sesión'),
+        automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -59,7 +66,9 @@ class LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _isLoading ? null : _login,
-              child: _isLoading ? CircularProgressIndicator() : const Text('Ingresar'),
+              child: _isLoading
+                  ? CircularProgressIndicator()
+                  : const Text('Ingresar'),
             ),
           ],
         ),
@@ -70,7 +79,7 @@ class LoginScreenState extends State<LoginScreen> {
 
 Future<String?> login(String username, String password) async {
   var url = Uri.parse(
-      "https://cuentademo.info/login/token.php?username=$username&password=$password&service=moodle_mobile_app");
+      "https://cuentademo.info/login/token.php?username=$username&password=$password&service=itec_api");
   var response = await http.get(url);
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);

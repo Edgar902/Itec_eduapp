@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/providers/user_provider.dart';
+import 'package:myapp/src/screens/login/login_screen.dart';
+import 'package:provider/provider.dart';
 
 class ConfigScreen extends StatelessWidget {
   const ConfigScreen({super.key});
@@ -38,7 +41,8 @@ class ConfigScreen extends StatelessWidget {
                         height: 20,
                       ),
                       Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0, top: 12.0),
+                          padding:
+                              const EdgeInsets.only(bottom: 12.0, top: 12.0),
                           child: Row(
                             children: [
                               ClipRRect(
@@ -68,7 +72,8 @@ class ConfigScreen extends StatelessWidget {
                             ],
                           )),
                       Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0, top: 12.0),
+                          padding:
+                              const EdgeInsets.only(bottom: 12.0, top: 12.0),
                           child: Row(
                             children: [
                               ClipRRect(
@@ -76,7 +81,8 @@ class ConfigScreen extends StatelessWidget {
                                   child: Container(
                                     padding: const EdgeInsets.all(16),
                                     color: Colors.blue,
-                                    child: const Icon(Icons.notifications_active,
+                                    child: const Icon(
+                                        Icons.notifications_active,
                                         color: Colors.white),
                                   )),
                               const SizedBox(
@@ -97,7 +103,12 @@ class ConfigScreen extends StatelessWidget {
                               ),
                             ],
                           )),
-                      const Text("Cerrar Session")
+                      ElevatedButton(
+                          onPressed: () {
+                            removeToken();
+                            Navigator.pushReplacementNamed(context, '/login');
+                          },
+                          child: Text("Cerrar Sesion"))
                     ],
                   ),
                 ),

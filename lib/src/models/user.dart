@@ -19,6 +19,8 @@ class User {
       required this.phone,
       required this.profileimageurl,
       required this.profileimageurlsmall});
+
+  int? get userId => id;
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],

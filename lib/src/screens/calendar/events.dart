@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:myapp/src/screens/login/login_screen.dart';
+import 'package:myapp/src/widget/WorkTile.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
@@ -13,8 +15,9 @@ class Events extends StatefulWidget {
 }
 
 Future<Map<DateTime, List<String>>> getEvents() async {
+  var token = await getToken();
   var url = Uri.parse(
-      "https://cuentademo.info/webservice/rest/server.php?wstoken=569b80afd1b69a16bbbce82f2e0995f2&wsfunction=core_calendar_get_calendar_monthly_view&moodlewsrestformat=json&year=2024&month=10");
+      "https://cuentademo.info/webservice/rest/server.php?wstoken=$token&wsfunction=core_calendar_get_calendar_monthly_view&moodlewsrestformat=json&year=2024&month=10");
   var response = await http.get(url);
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
@@ -77,7 +80,8 @@ class EventState extends State<Events> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SizedBox(
-        child: Column(
+        child: ListView(
+          scrollDirection: Axis.vertical,
           children: [
             Container(
                 width: double.infinity,
@@ -120,26 +124,16 @@ class EventState extends State<Events> {
               eventLoader:
                   _getEventsForDay, // Aquí cargamos los eventos del día seleccionado
             ),
-            ..._getEventsForDay(_selectedDay).map((event) => ListTile(
-                  title: Text(event),
+            ..._getEventsForDay(_selectedDay).map((event) => Column(
+                  children: [
+                    SizedBox(height: 20),
+                    WorkTile(
+                        icon: Icons.book,
+                        name: event,
+                        number: '2024-11-20 / 14:00',
+                        colors: Colors.green),
+                  ],
                 )),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _events[_selectedDay]?.length ??
-                    0, // Asegúrate de que no sea null
-                itemBuilder: (context, index) {
-                  final event = _events[_selectedDay]?[index];
-                  if (event != null) {
-                    return ListTile(
-                      title: Text(event),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-            ),
           ],
         ),
       ),

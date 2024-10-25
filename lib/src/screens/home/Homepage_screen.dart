@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/src/models/course.dart';
-import 'package:myapp/src/models/course_content.dart';
+
+import 'package:myapp/src/models/event.dart';
 import 'package:myapp/src/screens/class/detail_screen.dart';
-import 'package:myapp/src/widget/WorkTile.dart';
+import 'package:myapp/src/screens/login/login_screen.dart';
+
 import 'package:http/http.dart' as http;
+import 'package:myapp/src/widget/card_actions.dart';
 import 'package:provider/provider.dart';
 
 class HomePageScreen extends StatefulWidget {
@@ -22,24 +25,48 @@ class HomepageState extends State<HomePageScreen> {
   @override
   void initState() {
     super.initState();
+
     var datas = Provider.of<UserProvider>(context, listen: false);
     datas.fetchUserData();
+    print(datas);
   }
 
   static Future<List<Course>> getCourses() async {
+    var token = await getToken();
     var url = Uri.parse(
-        'https://cuentademo.info/webservice/rest/server.php?wstoken=569b80afd1b69a16bbbce82f2e0995f2&wsfunction=core_enrol_get_users_courses&moodlewsrestformat=json&userid=2');
+        "https://cuentademo.info/webservice/rest/server.php?wstoken=$token&wsfunction=core_enrol_get_users_courses&moodlewsrestformat=json&userid=2");
     var response = await http.get(url);
     final List body = jsonDecode(response.body);
 
     return body.map((e) => Course.fromJson(e)).toList();
   }
 
-  Future<List<Course>> coursesFuture = getCourses();
+  static Future<List<Event>> getEvents() async {
+    var token = await getToken();
+    var url = Uri.parse(
+        "https://cuentademo.info/webservice/rest/server.php?wstoken=$token&wsfunction=core_calendar_get_action_events_by_timesort&moodlewsrestformat=json&limitnum=10");
+    var response = await http.get(url);
 
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      if (data['events'] != null) {
+        List eventsData = data['events'];
+        print(eventsData);
+        return eventsData.map((e) => Event.fromJson(e)).toList();
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception('Error al obtener los eventos');
+    }
+  }
+
+  Future<List<Course>> coursesFuture = getCourses();
+  Future<List<Event>> eventFuture = getEvents();
   @override
   Widget build(BuildContext context) {
-    final name = context.watch<UserProvider>().fullname!;
+    final name = context.watch<UserProvider>().fullname ?? "";
     return Scaffold(
       body: SizedBox(
         child: ListView(
@@ -81,185 +108,165 @@ class HomepageState extends State<HomePageScreen> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                height: 250, // Ajusta la altura según sea necesario
-                child: FutureBuilder<List<Course>>(
-                  future: coursesFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasData) {
-                      List<Course> courses = snapshot.data ?? [];
-
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: courses.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            clipBehavior: Clip.antiAlias,
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            child: Stack(
-                              alignment: Alignment.bottomLeft,
-                              children: [
-                                // Imagen del curso
-                                CachedNetworkImage(
-                                  imageUrl: courses[index].courseimage!,
-                                  width: 250,
-                                  height: double.maxFinite,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                ),
-                                // Gradiente para hacer más legible el texto
-                                Positioned.fill(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.transparent,
-                                          Colors.black54
-                                        ],
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                // Nombre del curso sobre la imagen
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Text(
-                                    courses[index].fullname!,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      return const Text("No data available");
-                    }
-                  },
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Eventos', style: TextStyle(fontSize: 20)),
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Cursos",
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.w500),
+                    ),
+                  ),
                   SizedBox(
                     height: 20,
                   ),
-                  WorkTile(
-                      icon: Icons.book,
-                      name: 'Tarea 1',
-                      number: '2024-11-20 / 14:00',
-                      colors: Colors.green),
-                  WorkTile(
-                      icon: Icons.book,
-                      name: 'Tarea 2',
-                      number: '2024-11-22 / 23:00',
-                      colors: Colors.green),
-                  WorkTile(
-                      icon: Icons.forum,
-                      name: 'Foro',
-                      number: '2024-11-23 / 16:30',
-                      colors: Colors.blue),
-                  WorkTile(
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:824510203.
-                      icon: Icons.assessment,
-                      name: 'Evaluacion',
-                      number: '2024-11-30 / 11:00',
-                      colors: Colors.orange),
-                  WorkTile(
-                      icon: Icons.book,
-                      name: 'Tarea 3',
-                      number: '2024-12-01 / 24:00',
-                      colors: Colors.green),
+                  SizedBox(
+                    height: 250, // Ajusta la altura según sea necesario
+                    child: FutureBuilder<List<Course>>(
+                      future: coursesFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (snapshot.hasData) {
+                          List<Course> courses = snapshot.data ?? [];
+
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: courses.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => DetailScreen(
+                                                id: courses[index].id!,
+                                                name:
+                                                    courses[index].fullname!)));
+                                  },
+                                  splashColor: Colors.brown.withOpacity(0.5),
+                                  child: Stack(
+                                    alignment: Alignment.bottomLeft,
+                                    children: [
+                                      Ink(
+                                        height: double.maxFinite,
+                                        width: 250,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: CachedNetworkImageProvider(
+                                                courses[index].courseimage!),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned.fill(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.black54
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      // Nombre del curso sobre la imagen
+                                      Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Text(
+                                          courses[index].fullname!,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return const Text("No data available");
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Eventos",
+                        style: TextStyle(
+                            fontSize: 20.0, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    FutureBuilder<List<Event>>(
+                      future: eventFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return const Center(
+                            child: Text('No hay eventos disponibles.'),
+                          );
+                        } else {
+                          // Si todo está bien, renderizamos la lista de eventos
+                          final events = snapshot.data!;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: events.map((event) {
+                              return CardActions(
+                                  icon: event.iconurl,
+                                  name: event.name!,
+                                  date: '2024-11-20 / 14:00',
+                                  description: event.name!);
+                            }).toList(),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                )),
           ],
         ),
       ),
     );
   }
-}
-
-Widget classCard(context, title) {
-  return SizedBox(
-    width: MediaQuery.of(context).size.width / 2.5,
-    child: Container(
-        margin: EdgeInsets.all(10),
-        child: MaterialButton(
-            height: 120.0,
-            minWidth: 150.0,
-            color: Colors.blue,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DetailScreen(name: title)),
-              );
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Stack(children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  ),
-                  Text("A A - 24",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      )),
-                ],
-              ),
-            ]))),
-  );
-}
-
-Widget buildCourses(context, List<Courses> courses) {
-  return ListView.builder(
-      itemCount: courses.length,
-      itemBuilder: (context, index) {
-        final course = courses[index];
-        return Container(
-          color: Colors.grey.shade300,
-          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-          height: 100,
-          width: double.maxFinite,
-          child: Row(
-            children: [
-              SizedBox(width: 10),
-              Expanded(flex: 3, child: Text(course.name!)),
-            ],
-          ),
-        );
-      });
 }

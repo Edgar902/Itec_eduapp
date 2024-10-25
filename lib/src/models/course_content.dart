@@ -1,4 +1,4 @@
-class Courses {
+class CourseContent {
   int? id;
   String? name;
   int? visible;
@@ -8,7 +8,7 @@ class Courses {
   int? hidden;
   bool? uservisible;
 
-  Courses({
+  CourseContent({
     this.id,
     this.name,
     this.visible,
@@ -18,7 +18,7 @@ class Courses {
     this.summaryformat,
     this.uservisible,
   });
-  Courses.fromJson(Map<String, dynamic> json) {
+  CourseContent.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     visible = json['visible'];
@@ -32,6 +32,5 @@ class Courses {
   @override
   String toString() {
     return 'Course id: $id, name: $name, Credits: $visible';
-
   }
 }

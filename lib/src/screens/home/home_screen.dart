@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+
     userProvider.fetchUserData();
     _pageController = PageController();
   }
@@ -42,7 +43,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final users = context.watch<UserProvider>().userName;
+    final users = context.watch<UserProvider>().userName ?? "";
     print(users);
     return Scaffold(
       body: SizedBox.expand(
