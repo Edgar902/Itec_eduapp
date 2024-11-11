@@ -45,35 +45,94 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Iniciar sesión'),
-        automaticallyImplyLeading: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        backgroundColor: Colors.blue,
+        body: ListView(
           children: [
-            TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Usuario'),
+            SizedBox(
+              height: 50,
             ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Contraseña'),
-              obscureText: true,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Image.asset('assets/logo-gris-web.png', width: 100)],
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.all(30),
+              child: Container(
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text("Iniciar Sesion",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              color: Colors.white,
+                            )),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                        child: TextField(
+                          autofocus: false,
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Usuario',
+                              prefixIcon: Icon(Icons.person),
+                              contentPadding: EdgeInsets.all(10),
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 2))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                        child: TextField(
+                          autofocus: false,
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Contrasena',
+                              prefixIcon: Icon(Icons.lock),
+                              contentPadding: EdgeInsets.all(10),
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 2))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      ElevatedButton(
               onPressed: _isLoading ? null : _login,
               child: _isLoading
                   ? CircularProgressIndicator()
                   : const Text('Ingresar'),
             ),
+
+                    ],
+                  )),
+            )
           ],
-        ),
-      ),
-    );
+        ));
   }
 }
 
