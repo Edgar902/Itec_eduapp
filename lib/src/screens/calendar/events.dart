@@ -17,7 +17,7 @@ class Events extends StatefulWidget {
 Future<Map<DateTime, List<String>>> getEvents() async {
   var token = await getToken();
   var url = Uri.parse(
-      "https://cuentademo.info/webservice/rest/server.php?wstoken=$token&wsfunction=core_calendar_get_calendar_monthly_view&moodlewsrestformat=json&year=2024&month=10");
+      "https://itecapp.moodlecloud.com/webservice/rest/server.php?wstoken=$token&wsfunction=core_calendar_get_calendar_monthly_view&moodlewsrestformat=json&year=2024&month=11");
   var response = await http.get(url);
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
@@ -36,8 +36,9 @@ Future<Map<DateTime, List<String>>> getEvents() async {
             eventNames.add(event['name']);
           }
 
-          events[DateTime(2024, 10, days)] =
+          events[DateTime(2024, 11, days)] =
               eventNames; // Añadimos los eventos a ese día
+          print(eventNames);
         }
       }
     }

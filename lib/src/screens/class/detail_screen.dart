@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/src/models/course_content.dart';
+import 'package:myapp/src/models/participants.dart';
+import 'package:myapp/src/models/user.dart';
 import 'package:myapp/src/screens/login/login_screen.dart';
 import 'package:myapp/src/widget/WorkTile.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
   final int id;
@@ -19,24 +18,52 @@ class DetailScreen extends StatefulWidget {
 
 class DetailScreenState extends State<DetailScreen> {
   late Future<List<CourseContent>> courseContentsFuture;
+  late Future<List<User>> courseParticipants;
+  List<Item> items = [];
   @override
   void initState() {
     super.initState();
     // Inicializa el Future pasando el ID del curso
     courseContentsFuture = getCourseContents(widget.id);
+    courseParticipants = getCourseParticipants(widget.id);
   }
 
   static Future<List<CourseContent>> getCourseContents(int courseid) async {
     var token = await getToken();
     var url = Uri.parse(
-        "https://cuentademo.info/webservice/rest/server.php?wstoken=$token&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=$courseid");
+        "https://itecapp.moodlecloud.com/webservice/rest/server.php?wstoken=$token&wsfunction=core_course_get_contents&moodlewsrestformat=json&courseid=$courseid");
     var response = await http.get(url);
     if (response.statusCode == 200) {
       List body = jsonDecode(response.body);
+
       return body.map((data) => CourseContent.fromJson(data)).toList();
     } else {
       throw Exception("Error al cargar los contenidos del curso");
     }
+  }
+
+  static Future<List<User>> getCourseParticipants(int courseid) async {
+    var token = await getToken();
+    var url = Uri.parse(
+        "https://itecapp.moodlecloud.com/webservice/rest/server.php?wstoken=$token&wsfunction=core_enrol_get_enrolled_users&moodlewsrestformat=json&courseid=$courseid");
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      List body = jsonDecode(response.body);
+
+      return body.map((data) => User.fromJson(data)).toList();
+    } else {
+      throw Exception("Error al cargar los contenidos del curso");
+    }
+  }
+
+  void prepareItems(List<CourseContent> courseContents) {
+    items = courseContents
+        .map((content) => Item(
+              headerValue: content.name!,
+              expandedValue: content.modules!,
+              isExpanded: false,
+            ))
+        .toList();
   }
 
   @override
@@ -87,29 +114,77 @@ class DetailScreenState extends State<DetailScreen> {
                         child: Text('No hay eventos disponibles.'),
                       );
                     } else {
-                      // Si todo está bien, renderizamos la lista de eventos
-                      final events = snapshot.data!;
-                      return ListView.builder(
-                        itemCount: events.length,
-                        itemBuilder: (context, index) {
-                          return classCard(events[index].name);
-                        },
+                      prepareItems(snapshot.data!);
+                      return SizedBox(
+                        child: SingleChildScrollView(
+                          child: ExpansionPanelList.radio(
+                            children: items.map<ExpansionPanel>((Item item) {
+                              return ExpansionPanelRadio(
+                                value:
+                                    '${items.indexOf(item)}_${item.headerValue}',
+                                headerBuilder:
+                                    (BuildContext context, bool isExpanded) {
+                                  return ListTile(
+                                    title: Text(item.headerValue),
+                                  );
+                                },
+                                body: Column(
+                                  children: item.expandedValue.isEmpty
+                                      ? [
+                                          Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "No hay modules disponibles en esta sesccion",
+                                                style: TextStyle(
+                                                    color: Colors.grey),
+                                              ))
+                                        ]
+                                      : item.expandedValue.map((info) {
+                                          return ListTile(
+                                            title: Text(info.name),
+                                          );
+                                        }).toList(),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                       );
                     }
                   },
                 ),
               ),
               Container(
-                margin: const EdgeInsets.all(16),
-                child: ListView(
-                  scrollDirection: Axis.vertical,
-                  children: const <Widget>[
-                    WorkTile(
-                        icon: Icons.person,
-                        name: "Edgar Andrade",
-                        number: "Estudiante No - 1",
-                        colors: Colors.red)
-                  ],
+                margin: EdgeInsets.all(16),
+                child: FutureBuilder<List<User>>(
+                  future: courseParticipants,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Text('No hay eventos disponibles.'),
+                      );
+                    } else {
+                      // Si todo está bien, renderizamos la lista de eventos
+                      final events = snapshot.data!;
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: events.map((event) {
+                          return WorkTile(
+                              icon: Icons.abc,
+                              name: event.fullname!,
+                              number: "",
+                              colors: Colors.red);
+                        }).toList(),
+                      );
+                    }
+                  },
                 ),
               ),
             ],
@@ -158,4 +233,16 @@ Widget classCard(nombre) {
           ],
         )),
   );
+}
+
+class Item {
+  String headerValue;
+  List<dynamic> expandedValue;
+  bool isExpanded;
+
+  Item({
+    required this.headerValue,
+    required this.expandedValue,
+    this.isExpanded = false,
+  });
 }

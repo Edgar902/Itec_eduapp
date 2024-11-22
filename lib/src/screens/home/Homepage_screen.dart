@@ -22,29 +22,29 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class HomepageState extends State<HomePageScreen> {
+  static var userToken;
   @override
   void initState() {
     super.initState();
 
     var datas = Provider.of<UserProvider>(context, listen: false);
     datas.fetchUserData();
-    print(datas);
   }
 
   static Future<List<Course>> getCourses() async {
     var token = await getToken();
+    userToken = token;
     var url = Uri.parse(
-        "https://cuentademo.info/webservice/rest/server.php?wstoken=$token&wsfunction=core_enrol_get_users_courses&moodlewsrestformat=json&userid=2");
+        "https://itecapp.moodlecloud.com/webservice/rest/server.php?wstoken=$token&wsfunction=core_enrol_get_users_courses&moodlewsrestformat=json&userid=2");
     var response = await http.get(url);
     final List body = jsonDecode(response.body);
-
     return body.map((e) => Course.fromJson(e)).toList();
   }
 
   static Future<List<Event>> getEvents() async {
     var token = await getToken();
     var url = Uri.parse(
-        "https://cuentademo.info/webservice/rest/server.php?wstoken=$token&wsfunction=core_calendar_get_action_events_by_timesort&moodlewsrestformat=json&limitnum=10");
+        "https://itecapp.moodlecloud.com/webservice/rest/server.php?wstoken=$token&wsfunction=core_calendar_get_action_events_by_timesort&moodlewsrestformat=json&limitnum=10");
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -52,7 +52,6 @@ class HomepageState extends State<HomePageScreen> {
 
       if (data['events'] != null) {
         List eventsData = data['events'];
-        print(eventsData);
         return eventsData.map((e) => Event.fromJson(e)).toList();
       } else {
         return [];
@@ -164,7 +163,9 @@ class HomepageState extends State<HomePageScreen> {
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
                                             image: CachedNetworkImageProvider(
-                                                courses[index].courseimage!),
+                                                courses[index].courseimage! +
+                                                    "?token=" +
+                                                    userToken),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -253,7 +254,7 @@ class HomepageState extends State<HomePageScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: events.map((event) {
                               return CardActions(
-                                  icon: event.iconurl,
+                                  urlIcon: event.iconurl,
                                   name: event.name!,
                                   date: '2024-11-20 / 14:00',
                                   description: event.name!);

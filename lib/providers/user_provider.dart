@@ -64,13 +64,13 @@ class UserProvider with ChangeNotifier {
     _token = await getToken();
 
     var tokenUrl = Uri.parse(
-        "https://cuentademo.info/webservice/rest/server.php?wstoken=$_token&wsfunction=core_webservice_get_site_info&moodlewsrestformat=json");
+        "https://itecapp.moodlecloud.com/webservice/rest/server.php?wstoken=$_token&wsfunction=core_webservice_get_site_info&moodlewsrestformat=json");
     var res = await http.get(tokenUrl);
     final bodyId = jsonDecode(res.body);
     _id = bodyId['userid'];
-    print("id: $_id");
+    
     var url = Uri.parse(
-        "https://cuentademo.info/webservice/rest/server.php?wstoken=$_token&wsfunction=core_user_get_users_by_field&field=id&values[0]=$_id&moodlewsrestformat=json");
+        "https://itecapp.moodlecloud.com/webservice/rest/server.php?wstoken=$_token&wsfunction=core_user_get_users_by_field&field=id&values[0]=$_id&moodlewsrestformat=json");
 
     var response = await http.get(url);
 

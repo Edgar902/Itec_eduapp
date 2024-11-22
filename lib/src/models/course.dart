@@ -23,7 +23,7 @@ class Course {
     displayname = json['displayname'];
     summary = json['summary'];
     enrolledusercount = json['enrolledusercount'];
-    courseimage = json['courseimage'];
+    courseimage = json['overviewfiles'][0]['fileurl'];
   }
   @override
   String toString() {

@@ -34,4 +34,8 @@ class User {
       profileimageurl: json['profileimageurl'],
     );
   }
+  @override
+  String toString() {
+    return 'id: $id,username: $username, firstname: $firstname, lastname: $lastname, fullname: $fullname,email: $email,phone: $phone,profileimageurlsmall: $profileimageurlsmall,profileimageurlsmall: $profileimageurl';
+  }
 }

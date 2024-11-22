@@ -1,14 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import "package:flutter_svg/flutter_svg.dart";
 
 class CardActions extends StatelessWidget {
-  final icon;
+  final urlIcon;
   final String name;
   final String date;
   final String description;
 
   const CardActions(
       {Key? key,
-      required this.icon,
+      required this.urlIcon,
       required this.name,
       required this.date,
       required this.description})
@@ -24,19 +26,23 @@ class CardActions extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(date),
               Row(
                 children: [
-                  Icon(Icons.file_upload),
+                  SvgPicture.network(
+                    urlIcon,
+                    width: 35,
+                  ),
                   SizedBox(
                     width: 12,
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      Text(date),
                       Container(
                         padding: new EdgeInsets.only(right: 13.0),
                         child: Text(name,
@@ -57,9 +63,9 @@ class CardActions extends StatelessWidget {
                               fontSize: 16)),
                     ],
                   ),
-                  const Icon(Icons.arrow_left)
                 ],
               ),
+              const Icon(Icons.arrow_right)
             ],
           )),
     );

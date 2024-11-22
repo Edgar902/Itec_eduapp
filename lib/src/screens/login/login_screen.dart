@@ -122,12 +122,11 @@ class LoginScreenState extends State<LoginScreen> {
                         height: 30,
                       ),
                       ElevatedButton(
-              onPressed: _isLoading ? null : _login,
-              child: _isLoading
-                  ? CircularProgressIndicator()
-                  : const Text('Ingresar'),
-            ),
-
+                        onPressed: _isLoading ? null : _login,
+                        child: _isLoading
+                            ? CircularProgressIndicator()
+                            : const Text('Ingresar'),
+                      ),
                     ],
                   )),
             )
@@ -138,7 +137,7 @@ class LoginScreenState extends State<LoginScreen> {
 
 Future<String?> login(String username, String password) async {
   var url = Uri.parse(
-      "https://cuentademo.info/login/token.php?username=$username&password=$password&service=itec_api");
+      "https://itecapp.moodlecloud.com/login/token.php?username=$username&password=$password&service=itec_api");
   var response = await http.get(url);
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
