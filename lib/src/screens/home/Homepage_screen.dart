@@ -11,6 +11,7 @@ import 'package:myapp/src/screens/class/detail_screen.dart';
 import 'package:myapp/src/screens/login/login_screen.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:myapp/src/screens/notifications/notifications_screen.dart';
 import 'package:myapp/src/widget/card_actions.dart';
 import 'package:provider/provider.dart';
 
@@ -66,6 +67,7 @@ class HomepageState extends State<HomePageScreen> {
   @override
   Widget build(BuildContext context) {
     final name = context.watch<UserProvider>().fullname ?? "";
+    final userid = context.watch<UserProvider>().id ?? 0;
     return Scaffold(
       body: SizedBox(
         child: ListView(
@@ -99,7 +101,18 @@ class HomepageState extends State<HomePageScreen> {
                         ),
                       ],
                     ),
-                    IconButton(onPressed: null, icon: Icon(Icons.notifications))
+                    IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      NotificationsScreen(id: userid)));
+                        },
+                        icon: Icon(
+                          Icons.notifications,
+                          color: Colors.white,
+                        ))
                   ],
                 )),
             SizedBox(
@@ -257,7 +270,7 @@ class HomepageState extends State<HomePageScreen> {
                                   urlIcon: event.iconurl,
                                   name: event.name!,
                                   date: '2024-11-20 / 14:00',
-                                  description: event.name!);
+                                  description: event.description!);
                             }).toList(),
                           );
                         }

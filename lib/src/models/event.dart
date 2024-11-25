@@ -1,3 +1,5 @@
+import 'package:html/parser.dart';
+
 class Event {
   int? id;
   String? name;
@@ -25,10 +27,13 @@ class Event {
     this.fullname,
   });
   factory Event.fromJson(Map<String, dynamic> json) {
+    var desc = json['description'];
+    var document = parse(desc);
+    var description = document.body!.text;
     return Event(
       id: json['id'],
       name: json['name'],
-      description: json['description'],
+      description: description,
       activityname: json['activityname'],
       timestart: json['timestart'],
       timesort: json['timesort'],
