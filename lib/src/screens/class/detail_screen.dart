@@ -92,7 +92,7 @@ class DetailScreenState extends State<DetailScreen> {
                 unselectedLabelColor: Colors.white,
                 labelStyle: TextStyle(color: Colors.cyan),
                 tabs: <Widget>[
-                  Tab(text: "Modulos", icon: Icon(Icons.favorite)),
+                  Tab(text: "Modulos", icon: Icon(Icons.book)),
                   Tab(text: 'Estudiantes', icon: Icon(Icons.ad_units))
                 ],
               )),

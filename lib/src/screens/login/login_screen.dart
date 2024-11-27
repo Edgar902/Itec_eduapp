@@ -17,7 +17,7 @@ class LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;
-
+  bool _isObscured = true;
   void _login() async {
     setState(() {
       _isLoading = true;
@@ -102,9 +102,21 @@ class LoginScreenState extends State<LoginScreen> {
                         padding:
                             EdgeInsets.symmetric(vertical: 0, horizontal: 30),
                         child: TextField(
+                          obscureText: _isObscured,
                           autofocus: false,
                           controller: _passwordController,
                           decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                padding: EdgeInsetsDirectional.only(end: 12.0),
+                                icon: _isObscured
+                                    ? const Icon(Icons.visibility)
+                                    : const Icon(Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscured = !_isObscured;
+                                  });
+                                },
+                              ),
                               border: OutlineInputBorder(),
                               hintText: 'Contrasena',
                               prefixIcon: Icon(Icons.lock),
